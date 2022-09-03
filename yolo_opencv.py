@@ -2,101 +2,41 @@
 import cv2
 import argparse
 import numpy as np
-#ounces of CO2
-carbonFootprint = {
-    "person": 17280000, #https://www.pawprint.eco/eco-blog/average-carbon-footprint-globally
-    "bicycle": 8480, #https://slate.com/technology/2011/08/how-soon-does-a-bike-pay-back-its-initial-carbon-footprint.html#:~:text=Independent%20analysts%20have%20used%20a,of%20greenhouse%20gases%20(PDF).
-    "car": 1135822,#https://www.forbes.com/sites/jimgorzelany/2018/01/12/the-long-haul-15-vehicles-owners-keep-for-at-least-15-years/?sh=285e96cd6237  https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle#:~:text=typical%20passenger%20vehicle%3F-,A%20typical%20passenger%20vehicle%20emits%20about%204.6%20metric%20tons%20of,around%2011%2C500%20miles%20per%20year.
-    "motorcycle":238095, #https://www.thrustcarbon.com/insights/how-to-calculate-motorbike-co2-emissions
-    "airplane": 381487.9, #https://www.statista.com/statistics/829300/average-flight-hours-worldwide-business-aviation/#:~:text=Global%20business%20aviation%2D%20quarterly%20flight%20hours%20per%20aircraft%202014%2D2021&text=This%20statistic%20shows%20the%20average,an%20average%20of%2030.9%20hours. https://www.carbonindependent.org/22.html
-    "bus": 881849.04874, #https://www.liveabout.com/buses-and-other-transit-lifetime-2798844 https://www.carbonindependent.org/20.html
-    "toothbrush": 182.014,
-    "hair drier": 9120,
-    "teddy bear": 152.384,
-    "scissors": 98.76,
-    "vase": 172,
-    "clock": 'N/A',
-    "book": 35.27,
-    "refrigerator": 60283.201,
-    "sink": 32000,
-    "traffic light":
-    "fire hydrant":
-    "stop sign":
-    "parking meter":
-    "bench":
-    'bird':
-    'cat':
-    'dog':
-    'horse':
-    "sheep":
-    'cow':
-    'elephant':
-    'bear':
-    'zebra':
-    'giraffe':
-    'backpack':
-    'umbrella':
-    'handbag':
-    'tie':
-    'suitcase':
-    'frisbee':
-    'skis':
-    'snowboard':
-    'sports ball':
-    'kite':
-    'baseball bat':
-    'baseball glove':
-    'skateboard':
-    'surfboard':
-    'tennis racket':
-    'bottle':
-    'wine glass':
-    'cup':
-    'fork':
-    'knife':
-    'spoon':
-    'bowl':
-    'banana':
-    'apple':
-    'sandwich':
-    'orange':
-    'broccoli':
-    'carrot':
-    'hot dog':
-    'pizza':
-    'donut':
-    'cake':
-    'chair':
-    'couch':
-    'potted plant':
-    'bed':
-    'dining table':
-    'toilet':
-    'tv':
-    'laptop':
-    'mouse':
-    'remote':
-    'keyboard':
-    'cell phone':
-    'microwave':                 
-    "oven":
-    "toaster":
+import qrcode
 
-
-
-
-
-
-
-    
-
-
-
+alternative_items = {
+    'toothbrush': (182, 'bamboo toothbrush', "https://www.independent.co.uk/extras/indybest/fashion-beauty/best-bamboo-toothbrushes-plastic-pollution-biodegradable-bistles-dental-care-eco-friendly-a8411536.html"),
+    'car': (1135822, 'public transport', 'https://www.visitphilly.com/getting-around/'),
+    'motorcycle': (238095,'public transport', 'https://www.visitphilly.com/getting-around/'),
+    'bus': (881849,'public transport', 'https://www.visitphilly.com/getting-around/'),
+    'train': (0, 'public transport', 'https://www.visitphilly.com/getting-around/'),
+    'cup': (15, 'compostable cups', 'https://citizensustainable.com/eco-friendly-cups/'),
+    'refrigerator': (60283,'earthen pot', 'https://en.wikipedia.org/wiki/Pot-in-pot_refrigerator'),
+    'person': (17280000,'reducing your footprint' ,'https://europa.eu/youth/get-involved/sustainable-development/how-reduce-my-carbon-footprint_en'),
+    'bottle': (3, 'reusable water bottle', 'https://www.mindbodygreen.com/articles/philanthropic-water-bottles'),
+    'cell phone': (2400,'easy to repair cell phones', 'https://www.fairphone.com/en/'),
+    'airplane': (381487,'reducing flight footprint', 'https://carbonfund.org/how-to-offset-the-carbon-footprint-of-flying/'),
+    'sports ball': (30,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'book': (35,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'clock': (122, 'Donate to freecycle', 'https://www.freecycle.org/'),
+    'vase': (172,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'scissors': (98,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'teddy bear': (152,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'keyboard': (360,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'mouse': (280,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'remote': (200,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'chair' : (1500, 'Donate to freecycle', 'https://www.freecycle.org/'),
+    'couch' : (3000,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'backpack' : (600,'Donate to freecycle', 'https://www.freecycle.org/'),
+    'microwave': (27513,'Recycling', 'https://www.phila.gov/programs/recycling-program/'),
+    'oven': (45150, 'Recycling', 'https://www.phila.gov/programs/recycling-program/'),
+    'toaster': (5940,'Recycling', 'https://www.phila.gov/programs/recycling-program/'),
+    'laptop': (14938,'Recycling', 'https://www.phila.gov/programs/recycling-program/'),
 }
 
 ap = argparse.ArgumentParser()
-ap.add_argument('-i', '--image', required=True,
-                help='path to input image')
+# ap.add_argument('-i', '--image', required=True,
+#                 help='path to input image')
 ap.add_argument('-c', '--config', required=True,
                 help='path to yolo config file')
 ap.add_argument('-w', '--weights', required=True,
@@ -106,6 +46,9 @@ ap.add_argument('-cl', '--classes', required=True,
 args = ap.parse_args()
 
 
+all_labels = []
+total_footprint = 0
+
 def get_output_layers(net):
     layer_names = net.getLayerNames()
 
@@ -114,8 +57,23 @@ def get_output_layers(net):
     return output_layers
 
 
-def draw_prediction(img, class_id, confidence, x, y, x_plus_w, y_plus_h):
+def draw_prediction(img, class_id, confidence, x, y, x_plus_w, y_plus_h, num):
     label = str(classes[class_id])
+    global all_labels, total_footprint
+    for item in list(alternative_items.keys()):
+        if item == label and item not in all_labels:
+            all_labels.append(label)
+            total_footprint += alternative_items[item][0]
+            qr_pil = qrcode.make(alternative_items[item][2])
+            qr_pil.save('qr.png')
+            qr = cv2.resize(cv2.imread('qr.png'),(100,100))
+            x_offset = 30
+            y_offset = 80 + 100 * num
+            x_end = x_offset + qr.shape[1]
+            y_end = y_offset + qr.shape[0]
+            white_background[y_offset:y_end, x_offset:x_end] = qr
+            text = item + ": " + alternative_items[item][1]
+            cv2.putText(white_background, text, (x_offset+110, y_offset + 50), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
 
     color = COLORS[class_id]
 
@@ -124,8 +82,17 @@ def draw_prediction(img, class_id, confidence, x, y, x_plus_w, y_plus_h):
     cv2.putText(img, label, (x - 10, y - 10),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-
-image = cv2.imread(args.image)
+cap = cv2.VideoCapture(0)
+white_background = np.zeros([720,520,3],dtype=np.uint8)
+white_background.fill(255)
+while True:
+    isTrue, image = cap.read()
+    final = np.concatenate((image, white_background), axis=1)
+    cv2.imshow('Video', final)
+    if cv2.waitKey(20) & 0xFF == ord('d'):
+        break
+cap.release()
+cv2.destroyAllWindows()
 
 Width = image.shape[1]
 Height = image.shape[0]
@@ -146,6 +113,7 @@ blob = cv2.dnn.blobFromImage(
 net.setInput(blob)
 
 outs = net.forward(get_output_layers(net))
+
 
 class_ids = []
 confidences = []
@@ -171,7 +139,7 @@ for out in outs:
 
 indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
 
-for i in indices:
+for num, i in enumerate(indices):
     i = i
     box = boxes[i]
     x = box[0]
@@ -179,9 +147,11 @@ for i in indices:
     w = box[2]
     h = box[3]
     draw_prediction(image, class_ids[i], confidences[i], round(
-        x), round(y), round(x + w), round(y + h))
+        x), round(y), round(x + w), round(y + h), num)
 
-cv2.imshow("object detection", image)
+cv2.putText(white_background, "Total Carbon Footprint: " + str(total_footprint) + " ounces of CO2", (30, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 1)
+final = np.concatenate((image, white_background), axis=1)
+cv2.imshow("object detection", final)
 cv2.waitKey()
 
 cv2.imwrite("object-detection.jpg", image)
