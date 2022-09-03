@@ -2,6 +2,97 @@
 import cv2
 import argparse
 import numpy as np
+#ounces of CO2
+carbonFootprint = {
+    "person": 17280000, #https://www.pawprint.eco/eco-blog/average-carbon-footprint-globally
+    "bicycle": 8480, #https://slate.com/technology/2011/08/how-soon-does-a-bike-pay-back-its-initial-carbon-footprint.html#:~:text=Independent%20analysts%20have%20used%20a,of%20greenhouse%20gases%20(PDF).
+    "car": 1135822,#https://www.forbes.com/sites/jimgorzelany/2018/01/12/the-long-haul-15-vehicles-owners-keep-for-at-least-15-years/?sh=285e96cd6237  https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle#:~:text=typical%20passenger%20vehicle%3F-,A%20typical%20passenger%20vehicle%20emits%20about%204.6%20metric%20tons%20of,around%2011%2C500%20miles%20per%20year.
+    "motorcycle":238095, #https://www.thrustcarbon.com/insights/how-to-calculate-motorbike-co2-emissions
+    "airplane": 381487.9, #https://www.statista.com/statistics/829300/average-flight-hours-worldwide-business-aviation/#:~:text=Global%20business%20aviation%2D%20quarterly%20flight%20hours%20per%20aircraft%202014%2D2021&text=This%20statistic%20shows%20the%20average,an%20average%20of%2030.9%20hours. https://www.carbonindependent.org/22.html
+    "bus": 881849.04874, #https://www.liveabout.com/buses-and-other-transit-lifetime-2798844 https://www.carbonindependent.org/20.html
+    "toothbrush": 182.014,
+    "hair drier": 9120,
+    "teddy bear": 152.384,
+    "scissors": 98.76,
+    "vase": 172,
+    "clock": 'N/A',
+    "book": 35.27,
+    "refrigerator": 60283.201,
+    "sink": 32000,
+    "traffic light":
+    "fire hydrant":
+    "stop sign":
+    "parking meter":
+    "bench":
+    'bird':
+    'cat':
+    'dog':
+    'horse':
+    "sheep":
+    'cow':
+    'elephant':
+    'bear':
+    'zebra':
+    'giraffe':
+    'backpack':
+    'umbrella':
+    'handbag':
+    'tie':
+    'suitcase':
+    'frisbee':
+    'skis':
+    'snowboard':
+    'sports ball':
+    'kite':
+    'baseball bat':
+    'baseball glove':
+    'skateboard':
+    'surfboard':
+    'tennis racket':
+    'bottle':
+    'wine glass':
+    'cup':
+    'fork':
+    'knife':
+    'spoon':
+    'bowl':
+    'banana':
+    'apple':
+    'sandwich':
+    'orange':
+    'broccoli':
+    'carrot':
+    'hot dog':
+    'pizza':
+    'donut':
+    'cake':
+    'chair':
+    'couch':
+    'potted plant':
+    'bed':
+    'dining table':
+    'toilet':
+    'tv':
+    'laptop':
+    'mouse':
+    'remote':
+    'keyboard':
+    'cell phone':
+    'microwave':                 
+    "oven":
+    "toaster":
+
+
+
+
+
+
+
+    
+
+
+
+}
 
 ap = argparse.ArgumentParser()
 ap.add_argument('-i', '--image', required=True,
